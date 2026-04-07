@@ -102,9 +102,6 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_kps(void);
-extern uint64 sys_seturgency(void);
-extern uint64 sys_getpenergy(void);
-extern uint64 sys_setbudget(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -131,9 +128,6 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_kps] sys_kps,
-[SYS_seturgency]  sys_seturgency,
-[SYS_getpenergy]  sys_getpenergy,
-[SYS_setbudget]   sys_setbudget,
 };
 
 void

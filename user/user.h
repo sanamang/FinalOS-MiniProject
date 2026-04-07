@@ -49,6 +49,3 @@ void* malloc(uint);
 void free(void*);
 
 int kps(char []);
-int seturgency(int level);
-int getpenergy(int pid);
-int setbudget(int budget);

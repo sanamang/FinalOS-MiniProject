@@ -81,16 +81,8 @@ usertrap(void)
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2) {
-    myproc()->ticks_used++;
-    if(myproc()->energy_budget > 0 &&
-       myproc()->ticks_used > myproc()->energy_budget) {
-      printf("GreenX: PID %d exceeded energy budget (%d ticks), killing\n",
-             myproc()->pid, myproc()->energy_budget);
-      myproc()->killed = 1;
-    }
+  if(which_dev == 2)
     yield();
-  }
 
   prepare_return();
 

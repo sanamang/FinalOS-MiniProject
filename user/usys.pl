@@ -43,6 +43,3 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("kps");
-entry("seturgency");
-entry("getpenergy");
-entry("setbudget");

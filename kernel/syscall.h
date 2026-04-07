@@ -21,6 +21,3 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_kps 22
-#define SYS_seturgency  23
-#define SYS_getpenergy  24
-#define SYS_setbudget   25
