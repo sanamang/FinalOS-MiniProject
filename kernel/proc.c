@@ -124,6 +124,8 @@ allocproc(void)
 
 found:
   p->pid = allocpid();
+  p->urgency = URGENCY_NORMAL;
+  p->skip_count = 0;
   p->state = USED;
   p->waiting_tick = 0;
 
@@ -277,6 +279,7 @@ kfork(void)
     return -1;
   }
   np->sz = p->sz;
+  np->urgency = p->urgency;
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
@@ -574,6 +577,12 @@ scheduler(void)
       for(p = proc; p < &proc[NPROC]; p++){
         acquire(&p->lock);
         if(p->state == RUNNABLE){
+          if(p->urgency == URGENCY_LOW && p->skip_count < 2){
+            p->skip_count++;
+            release(&p->lock);
+            continue;
+          }
+          p->skip_count = 0;
           p->state = RUNNING;
           c->proc = p;
           swtch(&c->context, &p->context);
@@ -584,7 +593,7 @@ scheduler(void)
         }
         release(&p->lock);
       }
-      if(found == 0){
+      if(!found){
         intr_on();
         asm volatile("wfi");
       }
