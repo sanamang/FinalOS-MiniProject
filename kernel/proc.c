@@ -128,6 +128,7 @@ found:
   p->skip_count = 0;
   p->state = USED;
   p->waiting_tick = 0;
+  p->ticks_used = 0;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){

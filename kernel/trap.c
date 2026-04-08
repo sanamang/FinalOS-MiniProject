@@ -81,8 +81,10 @@ usertrap(void)
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2)
+  if(which_dev == 2){
+    p->ticks_used++;
     yield();
+  }
 
   prepare_return();
 

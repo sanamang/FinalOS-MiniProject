@@ -98,6 +98,7 @@ struct proc {
   int urgency;
   int skip_count;
   int waiting_tick;
+  uint64 ticks_used;
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
 
