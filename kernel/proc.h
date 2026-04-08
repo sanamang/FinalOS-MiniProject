@@ -99,6 +99,7 @@ struct proc {
   int skip_count;
   int waiting_tick;
   uint64 ticks_used;
+  uint64 energy_budget;
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
 

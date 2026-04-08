@@ -83,6 +83,11 @@ usertrap(void)
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2){
     p->ticks_used++;
+    if(p->energy_budget > 0 && p->ticks_used > p->energy_budget){
+      printf("GreenX: process %d (%s) exceeded energy budget. Killed.\n",
+             p->pid, p->name);
+      setkilled(p);
+    }
     yield();
   }
 
