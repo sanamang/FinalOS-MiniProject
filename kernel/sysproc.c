@@ -119,3 +119,37 @@ sys_kps(void)
     return -1;
   return kps(buf);
 }
+
+uint64
+sys_seturgency(void)
+{
+  int level;
+  argint(0, &level);
+
+  if(level < 0 || level > 2)
+    return -1;
+
+  myproc()->urgency = level;
+  return 0;
+}
+
+uint64
+sys_getpenergy(void)
+{
+  int pid;
+  argint(0, &pid);
+  return kgetpenergy(pid);
+}
+
+uint64
+sys_setbudget(void)
+{
+  int budget;
+  argint(0, &budget);
+
+  if(budget < 0)
+    return -1;
+
+  myproc()->energy_budget = (uint64)budget;
+  return 0;
+}

@@ -42,4 +42,7 @@ entry("getpid");
 entry("sbrk");
 entry("pause");
 entry("uptime");
+entry("seturgency");
+entry("getpenergy");
+entry("setbudget");
 entry("kps");

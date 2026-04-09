@@ -876,6 +876,23 @@ kps(char *arguments)
   return 0;
 }
 
+int
+kgetpenergy(int pid)
+{
+  struct proc *p;
+  uint64 energy = -1;
+
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->state != UNUSED && p->pid == pid){
+      energy = p->ticks_used;
+      release(&p->lock);
+      return (int)energy;
+    }
+    release(&p->lock);
+  }
+  return -1;
+}
 
 static int
 is_schedtest_name(char *name)

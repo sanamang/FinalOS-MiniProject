@@ -99,7 +99,7 @@ tags: $(OBJS)
 
 ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o
 
-_%: %.o $(ULIB) $U/user.ld
+$U/_%: $U/%.o $(ULIB) $U/user.ld
 	$(LD) $(LDFLAGS) -T $U/user.ld -o $@ $< $(ULIB)
 	$(OBJDUMP) -S $@ > $*.asm
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
@@ -125,32 +125,7 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 # http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 .PRECIOUS: %.o
 
-UPROGS=\
-	$U/_cat\
-	$U/_hello_world\
-	$U/_echo\
-	$U/_forktest\
-	$U/_grep\
-	$U/_init\
-	$U/_kill\
-	$U/_ln\
-	$U/_ls\
-	$U/_mkdir\
-	$U/_rm\
-	$U/_sh\
-	$U/_stressfs\
-	$U/_usertests\
-	$U/_grind\
-	$U/_wc\
-	$U/_zombie\
-	$U/_logstress\
-	$U/_forphan\
-	$U/_dorphan\
-	$U/_hello_world\
-	$U/_ps\
-	$U/_bad_pipe\
-	$U/_schedtest\
-	$U/_good_pipe
+UPROGS=$U/_cat $U/_echo $U/_forktest $U/_grep $U/_init $U/_kill $U/_ln $U/_ls $U/_mkdir $U/_rm $U/_sh $U/_stressfs $U/_usertests $U/_grind $U/_wc $U/_zombie $U/_logstress $U/_forphan $U/_dorphan $U/_hello_world $U/_ps $U/_bad_pipe $U/_schedtest $U/_good_pipe
 
 TXTFILES=$(wildcard $U/*.txt)
 
