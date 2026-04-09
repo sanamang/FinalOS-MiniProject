@@ -338,6 +338,10 @@ kexit(int status)
   if(p == initproc)
     panic("init exiting");
 
+  // Log budget-exceeded event now that we're in safe process context.
+  if(p->energy_budget > 0 && p->ticks_used > p->energy_budget)
+    greenlog_budget_exceeded(p->pid, p->name, p->ticks_used, p->energy_budget);
+
   // Close all open files.
   for(int fd = 0; fd < NOFILE; fd++){
     if(p->ofile[fd]){
@@ -659,6 +663,7 @@ forkret(void)
     // regular process (e.g., because it calls sleep), and thus cannot
     // be run from main().
     fsinit(ROOTDEV);
+    greenlog_init();
 
     first = 0;
     // ensure other cores see first=0.

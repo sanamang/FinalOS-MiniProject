@@ -9,6 +9,12 @@ struct sleeplock;
 struct stat;
 struct superblock;
 
+// greenlog.c
+void            greenlog_init(void);
+void            greenlog_write(char*);
+void            greenlog_budget_exceeded(int, char*, uint64, uint64);
+void            greenlog_urgency_change(int, char*, int);
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);

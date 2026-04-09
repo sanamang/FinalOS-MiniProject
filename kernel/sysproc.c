@@ -130,6 +130,7 @@ sys_seturgency(void)
     return -1;
 
   myproc()->urgency = level;
+  greenlog_urgency_change(myproc()->pid, myproc()->name, level);
   return 0;
 }
 

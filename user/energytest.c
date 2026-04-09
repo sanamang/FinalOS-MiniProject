@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   pid = fork();
   if(pid < 0) fail("Test 3 fork failed");
   if(pid == 0) {
-    sleep(2);
+    pause(20);
     exit(0);
   }
   wait(&st);
