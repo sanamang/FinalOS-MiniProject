@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   // Test 2: getpenergy tracks busy loop and handles invalid PID
   energy1 = getpenergy(getpid());
   int i, j = 0;
-  for(i=0; i<10000000; i++) { j += i; } // Burn some ticks
+  for(i=0; i<500000000; i++) { j += i; } // Burn many ticks (500M loops)
   energy2 = getpenergy(getpid());
   if(energy2 < energy1) fail("getpenergy returned lower value after busy loop");
   if(getpenergy(9999) != -1) fail("getpenergy(9999) should return -1");
