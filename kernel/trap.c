@@ -86,7 +86,6 @@ usertrap(void)
     if(p->energy_budget > 0 && p->ticks_used > p->energy_budget){
       printf("GreenX: process %d (%s) exceeded energy budget. Killed.\n",
              p->pid, p->name);
-      greenlog_budget_exceeded(p->pid, p->name, p->ticks_used, p->energy_budget);
       setkilled(p);
     }
     yield();
@@ -192,7 +191,7 @@ clockintr()
   // ask for the next timer interrupt. this also clears
   // the interrupt request. 1000000 is about a tenth
   // of a second.
-  w_stimecmp(r_time() + 100000);
+  w_stimecmp(r_time() + 10000);
 }
 
 // check if it's an external interrupt or software interrupt,
