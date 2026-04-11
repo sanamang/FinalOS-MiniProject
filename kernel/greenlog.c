@@ -115,18 +115,22 @@ greenlog_budget_exceeded(int pid, char *name, uint64 ticks_used, uint64 budget)
 }
 
 void
-greenlog_urgency_change(int pid, char *name, int new_level)
+greenlog_urgency_change(int pid, char *name, int old_level, int new_level)
 {
   char buf[128];
   int pos = 0;
-  char *level_str = (new_level == 0) ? "LOW" :
-                    (new_level == 1) ? "NORMAL" : "HIGH";
+  char *old_str = (old_level == 0) ? "LOW" :
+                  (old_level == 1) ? "NORMAL" : "HIGH";
+  char *new_str = (new_level == 0) ? "LOW" :
+                  (new_level == 1) ? "NORMAL" : "HIGH";
   appends(buf, &pos, "[URGENCY_CHANGE] pid=");
   itoa_k(pid, buf, &pos);
   appends(buf, &pos, " name=");
   appends(buf, &pos, name);
   appends(buf, &pos, " level=");
-  appends(buf, &pos, level_str);
+  appends(buf, &pos, old_str);
+  appends(buf, &pos, "->");
+  appends(buf, &pos, new_str);
   buf[pos++] = '\n';
   buf[pos]   = 0;
   greenlog_write(buf);

@@ -13,7 +13,7 @@ struct superblock;
 void            greenlog_init(void);
 void            greenlog_write(char*);
 void            greenlog_budget_exceeded(int, char*, uint64, uint64);
-void            greenlog_urgency_change(int, char*, int);
+void            greenlog_urgency_change(int, char*, int, int);
 
 // bio.c
 void            binit(void);

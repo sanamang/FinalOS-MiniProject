@@ -12,6 +12,7 @@ putc(int fd, char c)
   write(fd, &c, 1);
 }
 
+
 static void
 printint(int fd, long long xx, int base, int sgn, int width, int left_align)
 {
@@ -103,13 +104,12 @@ vprintf(int fd, const char *fmt, va_list ap)
         putc(fd, c0);
       }
     } else if(state == '%'){
-      if(c0 == '-'){
-        left_align = 1;
-        continue;
-      }
-      if(c0 >= '0' && c0 <= '9'){
-        width = width * 10 + (c0 - '0');
-        continue;
+      // Parse flags and width
+      while(c0 == '-' || (c0 >= '0' && c0 <= '9')){
+        if(c0 == '-') left_align = 1;
+        else width = width * 10 + (c0 - '0');
+        i++;
+        c0 = fmt[i] & 0xff;
       }
 
       c1 = c2 = 0;
@@ -143,7 +143,7 @@ vprintf(int fd, const char *fmt, va_list ap)
       } else if(c0 == 'p'){
         printptr(fd, va_arg(ap, uint64));
       } else if(c0 == 'c'){
-        putc(fd, va_arg(ap, uint32));
+        putc(fd, (char)va_arg(ap, uint32));
       } else if(c0 == 's'){
         if((s = va_arg(ap, char*)) == 0)
           s = "(null)";
