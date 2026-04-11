@@ -590,6 +590,7 @@ scheduler(void)
           }
           p->skip_count = 0;
           p->state = RUNNING;
+          p->ticks_used++; // Context switch overhead energy
           c->proc = p;
           swtch(&c->context, &p->context);
           c->proc = 0;
