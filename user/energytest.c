@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   pid = fork();
   if(pid < 0) fail("Test 4 fork failed");
   if(pid == 0) {
-    if(setbudget(3) != 0) fail("Test 4 setbudget failed");
+    if(setbudget(50) != 0) fail("Test 4 setbudget failed");
     while(1) {} // Spin forever, should be killed
   }
   wait(&st);
