@@ -13,15 +13,12 @@ main(int argc, char *argv[])
 
   printf("GreenX Energy Report\n");
   printf("--------------------\n");
-  printf("PID     TICKS\n");
+  printf("%-6s %-10s\n", "PID", "TICKS");
 
   for(pid = 1; pid <= NPROC; pid++) {
     energy = getpenergy(pid);
     if(energy != -1) {
-      if(pid < 10)
-        printf("%d       %d\n", pid, energy);
-      else
-        printf("%d      %d\n", pid, energy);
+      printf("%-6d %-10d\n", pid, energy);
       count++;
       total += energy;
     }

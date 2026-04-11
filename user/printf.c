@@ -13,7 +13,7 @@ putc(int fd, char c)
 }
 
 static void
-printint(int fd, long long xx, int base, int sgn)
+printint(int fd, long long xx, int base, int sgn, int width, int left_align)
 {
   char buf[20];
   int i, neg;
@@ -34,8 +34,44 @@ printint(int fd, long long xx, int base, int sgn)
   if(neg)
     buf[i++] = '-';
 
+  int len = i;
+  if(!left_align){
+    while(width > len){
+      putc(fd, ' ');
+      width--;
+    }
+  }
   while(--i >= 0)
     putc(fd, buf[i]);
+  if(left_align){
+    while(width > len){
+      putc(fd, ' ');
+      width--;
+    }
+  }
+}
+
+static void
+printstr(int fd, char *s, int width, int left_align)
+{
+  int len = 0;
+  char *p = s;
+  while(*p++) len++;
+
+  if(!left_align){
+    while(width > len){
+      putc(fd, ' ');
+      width--;
+    }
+  }
+  for(p=s; *p; p++)
+    putc(fd, *p);
+  if(left_align){
+    while(width > len){
+      putc(fd, ' ');
+      width--;
+    }
+  }
 }
 
 static void
@@ -53,6 +89,7 @@ vprintf(int fd, const char *fmt, va_list ap)
 {
   char *s;
   int c0, c1, c2, i, state;
+  int width, left_align;
 
   state = 0;
   for(i = 0; fmt[i]; i++){
@@ -60,36 +97,48 @@ vprintf(int fd, const char *fmt, va_list ap)
     if(state == 0){
       if(c0 == '%'){
         state = '%';
+        width = 0;
+        left_align = 0;
       } else {
         putc(fd, c0);
       }
     } else if(state == '%'){
+      if(c0 == '-'){
+        left_align = 1;
+        continue;
+      }
+      if(c0 >= '0' && c0 <= '9'){
+        width = width * 10 + (c0 - '0');
+        continue;
+      }
+
       c1 = c2 = 0;
       if(c0) c1 = fmt[i+1] & 0xff;
       if(c1) c2 = fmt[i+2] & 0xff;
+
       if(c0 == 'd'){
-        printint(fd, va_arg(ap, int), 10, 1);
+        printint(fd, va_arg(ap, int), 10, 1, width, left_align);
       } else if(c0 == 'l' && c1 == 'd'){
-        printint(fd, va_arg(ap, uint64), 10, 1);
+        printint(fd, va_arg(ap, uint64), 10, 1, width, left_align);
         i += 1;
       } else if(c0 == 'l' && c1 == 'l' && c2 == 'd'){
-        printint(fd, va_arg(ap, uint64), 10, 1);
+        printint(fd, va_arg(ap, uint64), 10, 1, width, left_align);
         i += 2;
       } else if(c0 == 'u'){
-        printint(fd, va_arg(ap, uint32), 10, 0);
+        printint(fd, va_arg(ap, uint32), 10, 0, width, left_align);
       } else if(c0 == 'l' && c1 == 'u'){
-        printint(fd, va_arg(ap, uint64), 10, 0);
+        printint(fd, va_arg(ap, uint64), 10, 0, width, left_align);
         i += 1;
       } else if(c0 == 'l' && c1 == 'l' && c2 == 'u'){
-        printint(fd, va_arg(ap, uint64), 10, 0);
+        printint(fd, va_arg(ap, uint64), 10, 0, width, left_align);
         i += 2;
       } else if(c0 == 'x'){
-        printint(fd, va_arg(ap, uint32), 16, 0);
+        printint(fd, va_arg(ap, uint32), 16, 0, width, left_align);
       } else if(c0 == 'l' && c1 == 'x'){
-        printint(fd, va_arg(ap, uint64), 16, 0);
+        printint(fd, va_arg(ap, uint64), 16, 0, width, left_align);
         i += 1;
       } else if(c0 == 'l' && c1 == 'l' && c2 == 'x'){
-        printint(fd, va_arg(ap, uint64), 16, 0);
+        printint(fd, va_arg(ap, uint64), 16, 0, width, left_align);
         i += 2;
       } else if(c0 == 'p'){
         printptr(fd, va_arg(ap, uint64));
@@ -98,16 +147,13 @@ vprintf(int fd, const char *fmt, va_list ap)
       } else if(c0 == 's'){
         if((s = va_arg(ap, char*)) == 0)
           s = "(null)";
-        for(; *s; s++)
-          putc(fd, *s);
+        printstr(fd, s, width, left_align);
       } else if(c0 == '%'){
         putc(fd, '%');
       } else {
-        // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
       }
-
       state = 0;
     }
   }

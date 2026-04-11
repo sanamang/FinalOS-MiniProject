@@ -86,6 +86,7 @@ usertrap(void)
     if(p->energy_budget > 0 && p->ticks_used > p->energy_budget){
       printf("GreenX: process %d (%s) exceeded energy budget. Killed.\n",
              p->pid, p->name);
+      greenlog_budget_exceeded(p->pid, p->name, p->ticks_used, p->energy_budget);
       setkilled(p);
     }
     yield();
@@ -159,8 +160,18 @@ kerneltrap()
   }
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2 && myproc() != 0)
+  if(which_dev == 2 && myproc() != 0) {
+    struct proc *p = myproc();
+    p->ticks_used++;
+    if(p->energy_budget > 0 && p->ticks_used > p->energy_budget){
+      printf("GreenX: process %d (%s) exceeded energy budget. Killed.\n",
+             p->pid, p->name);
+      setkilled(p);
+      // Note: we don't log to greenlog here because we are in kerneltrap
+      // and might be holding FS locks. The process will be killed soon.
+    }
     yield();
+  }
 
   // the yield() may have caused some traps to occur,
   // so restore trap registers for use by kernelvec.S's sepc instruction.
